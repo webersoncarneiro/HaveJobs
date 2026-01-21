@@ -37,7 +37,7 @@ interface RemotiveResponse {
 export const JobService = {
     getJobs: async (): Promise<Job[]> => {
         try {
-            const response = await axios.get('https://remotive.com/api/remote-jobs?category=software-dev&limit=20');
+            const response = await axios.get('https://remotive.com/api/remote-jobs?category=software-dev');
             const data = response.data as RemotiveResponse;
 
             const remotiveJobs = data.jobs || [];
