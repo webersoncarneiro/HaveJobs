@@ -6,14 +6,25 @@ import { JobList } from './components/Jobs/JobList';
 
 function App() {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [allJobs, setAllJobs] = useState<Job[]>([]);
+  const [page, setPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   useEffect(() => {
     const loadJobs = async () => {
       const loadedJobs = await JobService.getJobs();
-      setJobs(loadedJobs);
+      setAllJobs(loadedJobs);
+      setJobs(loadedJobs.slice(0, ITEMS_PER_PAGE));
     };
     loadJobs();
   }, []);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    const nextJobs = allJobs.slice(0, nextPage * ITEMS_PER_PAGE);
+    setJobs(nextJobs);
+    setPage(nextPage);
+  };
 
   return (
     <div className="app-main">
@@ -31,6 +42,28 @@ function App() {
           <JobList
             jobs={jobs}
           />
+
+          {jobs.length < allJobs.length && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+              <button
+                onClick={handleLoadMore}
+                className="load-more-btn"
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: 'var(--color-primary)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s'
+                }}
+              >
+                Load More Jobs
+              </button>
+            </div>
+          )}
         </div>
       </main>
     </div>
